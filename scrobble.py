@@ -8,7 +8,7 @@ import time
 
 class Scrobbler(object):
     def __init__(self):
-        self.token = self.getToken()
+        self.token = self.get_token()
 
     def scrobble(self, artist, track, album=None):
         timestamp = str(int(time.time()))
@@ -17,33 +17,33 @@ class Scrobbler(object):
                   'track': track,
                   'timestamp': timestamp,
                   'api_key': config.apiKey,
-                  'sk': self.sessionKey()}
+                  'sk': self.session_key()}
         if album:
             params['album'] = album
         params['api_sig'] = self.sign(params)
         print self.request(params)
 
-    def nowPlaying(self, artist, track, album=None):
+    def now_playing(self, artist, track, album=None):
         timestamp = str(int(time.time()))
         params = {'artist': artist,
                   'method': 'track.updateNowPlaying',
                   'track': track,
                   'timestamp': timestamp,
                   'api_key': config.apiKey,
-                  'sk': self.sessionKey()}
+                  'sk': self.session_key()}
         if album:
             params['album'] = album
  
         params['api_sig'] = self.sign(params)
         print self.request(params)
 
-    def sessionKey(self):
+    def session_key(self):
         if os.path.exists(config.sessionFile):
             with open(config.sessionFile) as f:
                 return f.read()
         else:
-            self.logIn()
-            return self.getSession()
+            self.log_in()
+            return self.get_session()
 
     def request(self, args):
         params = urllib.urlencode(args)
@@ -55,14 +55,14 @@ class Scrobbler(object):
         response = lastfm.getresponse()
         return response.read()
 
-    def logIn(self):
+    def log_in(self):
         url = 'http://www.last.fm/api/auth/?api_key={0}&token={1}'.format(
                                                      config.apiKey,
                                                      self.token)
         print 'Please log in at this url then press enter:', url
         raw_input()
 
-    def getSession(self):
+    def get_session(self):
         params = {'method': 'auth.getSession',
                   'api_key': config.apiKey,
                   'token': self.token}
@@ -73,7 +73,7 @@ class Scrobbler(object):
             f.write(sessionKey)
         return sessionKey
 
-    def getToken(self):
+    def get_token(self):
         token = self.request({'method': 'auth.getToken',
                               'api_sig': config.apiSig,
                               'api_key': config.apiKey})
@@ -92,4 +92,4 @@ class Scrobbler(object):
 
 if __name__ == '__main__':
     s = Scrobbler()
-    s.nowPlaying('Parov Stelar', 'For Rose')
+    s.now_playing('Parov Stelar', 'For Rose')
