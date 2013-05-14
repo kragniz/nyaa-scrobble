@@ -1,14 +1,16 @@
 import urllib
 import httplib
 import re
-import config
 import os
 import hashlib
 import time
 
 class Scrobbler(object):
-    def __init__(self):
+    def __init__(self, key, secret, sessionFile='.nyaa'):
         self.token = self.get_token()
+        self.sessionFile = sessionFile
+        self.key = key
+        self.secret = secret
 
     def scrobble(self, artist, track, album=None):
         timestamp = str(int(time.time()))
@@ -16,7 +18,7 @@ class Scrobbler(object):
                   'method': 'track.scrobble',
                   'track': track,
                   'timestamp': timestamp,
-                  'api_key': config.apiKey,
+                  'api_key': self.key,
                   'sk': self.session_key()}
         if album:
             params['album'] = album
@@ -29,7 +31,7 @@ class Scrobbler(object):
                   'method': 'track.updateNowPlaying',
                   'track': track,
                   'timestamp': timestamp,
-                  'api_key': config.apiKey,
+                  'api_key': self.key,
                   'sk': self.session_key()}
         if album:
             params['album'] = album
@@ -38,8 +40,8 @@ class Scrobbler(object):
         print self.request(params)
 
     def session_key(self):
-        if os.path.exists(config.sessionFile):
-            with open(config.sessionFile) as f:
+        if os.path.exists(self.sessionFile):
+            with open(self.sessionFile) as f:
                 return f.read()
         else:
             self.log_in()
@@ -57,26 +59,26 @@ class Scrobbler(object):
 
     def log_in(self):
         url = 'http://www.last.fm/api/auth/?api_key={0}&token={1}'.format(
-                                                     config.apiKey,
+                                                     self.key,
                                                      self.token)
         print 'Please log in at this url then press enter:', url
         raw_input()
 
     def get_session(self):
         params = {'method': 'auth.getSession',
-                  'api_key': config.apiKey,
+                  'api_key': self.key,
                   'token': self.token}
         params['api_sig'] = self.sign(params)
         sessionKey = self.request(params)
         sessionKey = re.search('<key.+key>', sessionKey).group()[5:-6]
-        with open(config.sessionFile, 'w') as f:
+        with open(self.sessionFile, 'w') as f:
             f.write(sessionKey)
         return sessionKey
 
     def get_token(self):
         token = self.request({'method': 'auth.getToken',
-                              'api_sig': config.apiSig,
-                              'api_key': config.apiKey})
+                              'api_sig': self.secret,
+                              'api_key': self.key})
         return re.search('<token.+token>', token).group()[7:-8]
 
     def sign(self, methods):
@@ -87,7 +89,7 @@ class Scrobbler(object):
         l.sort()
         for i in l:
             s += i
-        return hashlib.md5(s+config.apiSig).hexdigest()
+        return hashlib.md5(s+self.secret).hexdigest()
 
 
 if __name__ == '__main__':
