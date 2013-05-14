@@ -4,6 +4,7 @@ import scrobble
 import os
 import urllib2
 import json
+import time
 
 apiKey = '244d125339177815f7f92e80258697fa'
 apiSecret = '0f7cf1bd802421c346e446e789870985'
@@ -16,5 +17,17 @@ def read_nyaa():
     s = urllib2.urlopen('http://radio.nyaa-nyaa.com/np.php').read()
     return json.loads(s)
 
-nyaa = read_nyaa()
-scrob.scrobble(nyaa['song'], nyaa['artist'])
+def next_song(nyaa):
+    print nyaa['artist'], '-', nyaa['song']
+    scrob.now_playing(nyaa['song'], nyaa['artist'])
+
+lastNyaa = read_nyaa()
+next_song(lastNyaa)
+while True:
+    nyaa = read_nyaa()
+    if nyaa['song'] != lastNyaa['song']:
+        scrob.scrobble(lastNyaa['song'], lastNyaa['artist'])
+        next_song(nyaa)
+        lastNyaa = nyaa
+    else:
+        time.sleep(10)
