@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+import scrobble
+import os
+
+apiKey = '244d125339177815f7f92e80258697fa'
+apiSecret = '0f7cf1bd802421c346e446e789870985'
+
+scrob = scrobble.Scrobbler(apiKey,
+                           apiSecret,
+                           os.path.join(os.path.expanduser('~'), '.nyaa'))
+
+scrob.scrobble('Sam', 'ルカルカ★ナイトフィーバー')
