@@ -2,6 +2,8 @@
 # -*- coding: utf8 -*-
 import scrobble
 import os
+import urllib2
+import json
 
 apiKey = '244d125339177815f7f92e80258697fa'
 apiSecret = '0f7cf1bd802421c346e446e789870985'
@@ -10,4 +12,9 @@ scrob = scrobble.Scrobbler(apiKey,
                            apiSecret,
                            os.path.join(os.path.expanduser('~'), '.nyaa'))
 
-scrob.scrobble('Sam', 'ルカルカ★ナイトフィーバー')
+def read_nyaa():
+    s = urllib2.urlopen('http://radio.nyaa-nyaa.com/np.php').read()
+    return json.loads(s)
+
+nyaa = read_nyaa()
+scrob.scrobble(nyaa['song'], nyaa['artist'])
