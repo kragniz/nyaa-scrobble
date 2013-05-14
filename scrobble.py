@@ -4,6 +4,7 @@ import re
 import os
 import hashlib
 import time
+import webbrowser
 
 class Scrobbler(object):
     def __init__(self, key, secret, sessionFile='.nyaa'):
@@ -61,7 +62,8 @@ class Scrobbler(object):
         url = 'http://www.last.fm/api/auth/?api_key={0}&token={1}'.format(
                                                      self.key,
                                                      self.token)
-        print 'Please log in at this url then press enter:', url
+        print 'Please log in at this url then press enter:\n', url
+        webbrowser.open(url)
         raw_input()
 
     def get_session(self):
