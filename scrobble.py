@@ -47,7 +47,7 @@ class Scrobbler(object):
 
     def request(self, args):
         params = urllib.urlencode(args)
-        header = {'user-agent': 'musc/0.1',
+        header = {'user-agent': 'nyaa-scrobble/0.1',
                   'Content-type': 'application/x-www-form-urlencoded'}
 
         lastfm = httplib.HTTPConnection('ws.audioscrobbler.com')
