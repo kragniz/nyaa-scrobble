@@ -38,7 +38,7 @@ class Scrobbler(object):
             params['album'] = album
  
         params['api_sig'] = self.sign(params)
-        print self.request(params)
+        self.request(params)
 
     def session_key(self):
         if os.path.exists(self.sessionFile):
