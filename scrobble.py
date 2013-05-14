@@ -7,10 +7,10 @@ import time
 
 class Scrobbler(object):
     def __init__(self, key, secret, sessionFile='.nyaa'):
-        self.token = self.get_token()
-        self.sessionFile = sessionFile
         self.key = key
         self.secret = secret
+        self.token = self.get_token()
+        self.sessionFile = sessionFile
 
     def scrobble(self, artist, track, album=None):
         timestamp = str(int(time.time()))
