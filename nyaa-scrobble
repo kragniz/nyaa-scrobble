@@ -30,4 +30,5 @@ while True:
         next_song(nyaa)
         lastNyaa = nyaa
     else:
+        scrob.now_playing(nyaa['song'], nyaa['artist'])
         time.sleep(10)
