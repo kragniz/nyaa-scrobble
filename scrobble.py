@@ -92,8 +92,3 @@ class Scrobbler(object):
         for i in l:
             s += i
         return hashlib.md5(s+self.secret).hexdigest()
-
-
-if __name__ == '__main__':
-    s = Scrobbler()
-    s.now_playing('Parov Stelar', 'For Rose')
